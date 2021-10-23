@@ -1,7 +1,6 @@
 package com.example.rickandmortyepisodeguide.ViewModels
 
-import android.util.Log
-import android.widget.Toast
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,10 +11,10 @@ import com.example.rickandmortyepisodeguide.data.pojo.Info
 import com.example.rickandmortyepisodeguide.data.repository.RnMRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Response
+
 
 class EpisodeViewModel(private val repository: RnMRepository): ViewModel() {
-    var CharacterLiveData = MutableLiveData<CharacterList>()
+    var characterLiveData = MutableLiveData<CharacterList>()
     var episodeData  = MutableLiveData<EpisodeInfo>()
     val genders = listOf("Female","Male","Genderless","Unknown")
     val charactersOfEpisode = mutableListOf<String>()
@@ -26,7 +25,7 @@ class EpisodeViewModel(private val repository: RnMRepository): ViewModel() {
 
     fun fetchEpisodeData(episodeId: Int) {
         viewModelScope.launch(Dispatchers.IO){
-            var result = repository.getSingleEpisode(episodeId)
+            val result = repository.getSingleEpisode(episodeId)
             if(result.isSuccessful) {
                 episodeData.postValue(result.body())
             }
@@ -35,7 +34,7 @@ class EpisodeViewModel(private val repository: RnMRepository): ViewModel() {
 
     }
 
-    fun filterCharacterByGender(gender: String,episodeId:Int) {
+    fun filterCharacterByGender(gender: String) {
         viewModelScope.launch(Dispatchers.IO) {
             for(url in charactersOfEpisode){
                 val id = url.split("/")
@@ -44,50 +43,42 @@ class EpisodeViewModel(private val repository: RnMRepository): ViewModel() {
                     filteredCharacter.add(result.body()!!)
                 }
             }
-            var genderedcharacter = filteredCharacter.filter{
+            val genderFilteredCharacters = filteredCharacter.filter{
                 it.gender == gender
             }
 
-            CharacterLiveData.postValue(CharacterList(Info(0,"",0,""),genderedcharacter))
+            characterLiveData.postValue(CharacterList(Info(0,"",0,""),genderFilteredCharacters))
             filteredCharacter.clear()
 
 
         }
 
     }
-    fun filterCharacterByNameAndGender(gender: String,name:String,episodeId:Int) {
+    fun filterCharacterByNameAndGender(gender: String,name:String) {
         viewModelScope.launch(Dispatchers.IO) {
             filteredCharacter.clear()
-            var result = repository.filterCharacterByNameAndGender(gender, name,episodeId)
+            val result = repository.filterCharacterByNameAndGender(gender, name)
             if (result.isSuccessful) {
-                var info = result.body()!!
+                val info = result.body()!!
                 for( character in info.results)
                     if( character.url in charactersOfEpisode){
                         filteredCharacter.add(character)
                     }
             }
-            CharacterLiveData.postValue(CharacterList(Info(0,"",0,""),filteredCharacter))
+            characterLiveData.postValue(CharacterList(Info(0,"",0,""),filteredCharacter))
 
         }
     }
 
-    fun filterCharacters(selectedItem: String, text: String,episodeId:Int) {
+    fun filterCharacters(selectedItem: String, text: String) {
         if(text.isEmpty()){
             filteredCharacter.clear()
-            filterCharacterByGender(selectedItem,episodeId)
+            filterCharacterByGender(selectedItem)
         }else{
             filteredCharacter.clear()
-            filterCharacterByNameAndGender(selectedItem,text,episodeId)
+            filterCharacterByNameAndGender(selectedItem,text)
         }
 
-    }
-    fun getCharacters(){
-        viewModelScope.launch(Dispatchers.IO) {
-            var response = repository.getCharacter(1).body()!!
-            var response2 = repository.getCharacter(2).body()!!
-            CharacterLiveData.postValue(CharacterList(Info(0,"",0,""), listOf(response,response2)))
-
-        }
     }
 
 }

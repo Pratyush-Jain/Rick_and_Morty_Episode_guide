@@ -2,17 +2,13 @@ package com.example.rickandmortyepisodeguide.ViewModels
 
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rickandmortyepisodeguide.data.pojo.EpisodeInfo
-import com.example.rickandmortyepisodeguide.data.pojo.EpisodeList
 import com.example.rickandmortyepisodeguide.data.repository.RnMRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Response
 
 class MainViewModel(private val repository:RnMRepository): ViewModel() {
 
@@ -37,21 +33,22 @@ class MainViewModel(private val repository:RnMRepository): ViewModel() {
 
     fun fetchData(startEpisode: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            var range = (startEpisode..startEpisode + PAGING_COUNT).toList()
-            var fetchedEpisodesResult = repository.fetchEpisodes(range)
-            var le = fetchedEpisodesResult.body().toString().length
-            var siz = 2000
-            var top = le/siz
-
-            for(i in 0..top){
-                var start = i*siz
-                var end = (i+1)*siz
-                if (end>le){
-                    end = le
-                }
-                Log.d("RESSULT",fetchedEpisodesResult.body().toString().substring(start,end))
-            }
-            Log.d("RResult",fetchedEpisodesResult.body().toString())
+            val range = (startEpisode..startEpisode + PAGING_COUNT).toList()
+            val fetchedEpisodesResult = repository.fetchEpisodes(range)
+            // To log whole response
+//            val len = fetchedEpisodesResult.body().toString().length
+//            val siz = 2000
+//            val top = len/siz
+//
+//            for(i in 0..top){
+//                var start = i*siz
+//                var end = (i+1)*siz
+//                if (end>len){
+//                    end = len
+//                }
+//                Log.d("RESSULT",fetchedEpisodesResult.body().toString().substring(start,end))
+//            }
+//            Log.d("RResult",fetchedEpisodesResult.body().toString())
             if(fetchedEpisodesResult.isSuccessful) {
                 allEpisodesLivedata.postValue(fetchedEpisodesResult.body())
             }

@@ -2,15 +2,12 @@ package com.example.rickandmortyepisodeguide
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +18,6 @@ import com.example.rickandmortyepisodeguide.data.api.RetrofitHelper
 import com.example.rickandmortyepisodeguide.data.api.RnMService
 import com.example.rickandmortyepisodeguide.data.repository.RnMRepository
 import com.example.rickandmortyepisodeguide.databinding.ActivityEpisodeBinding
-import com.example.rickandmortyepisodeguide.databinding.ActivityMainBinding
 
 
 class EpisodeActivity : AppCompatActivity() {
@@ -35,7 +31,7 @@ class EpisodeActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val intent = getIntent()
-        var episodeId = intent.getIntExtra("id",1)
+        val episodeId = intent.getIntExtra("id",1)
 
         val rnmService = RetrofitHelper.getInstance().create(RnMService::class.java)
         val rnmRepository = RnMRepository(rnmService)
@@ -44,7 +40,7 @@ class EpisodeActivity : AppCompatActivity() {
         episodeViewModel.fetchEpisodeData(episodeId)
         binding.characterRV.layoutManager = LinearLayoutManager(this)
 
-        episodeViewModel.episodeData.observe(this, Observer {
+        episodeViewModel.episodeData.observe(this,  {
             binding.episodeNumber.setText(it.episode)
             binding.episodeTitle.setText(it.name)
             binding.releaseDate.setText(it.airDate)
@@ -67,8 +63,7 @@ class EpisodeActivity : AppCompatActivity() {
                 }else {
                     episodeViewModel.filterCharacters(
                         p0!!.getItemAtPosition(p2).toString(),
-                        "",
-                        episodeId
+                        ""
                     )
                     binding.progressBar2.visibility = View.VISIBLE
                 }
@@ -85,11 +80,11 @@ class EpisodeActivity : AppCompatActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(!p0.isNullOrEmpty()){
                     binding.progressBar2.visibility = View.VISIBLE
-                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString())
                     //episodeViewModel.filterCharacterByNameAndGender(binding.genderSpinner.selectedItem.toString(), p0.toString(),episodeId)
                 }
                 else{
-                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString())
                     //episodeViewModel.filterCharacterByGender(binding.genderSpinner.selectedItem.toString(),episodeId)
                 }
             }
@@ -97,11 +92,11 @@ class EpisodeActivity : AppCompatActivity() {
             override fun afterTextChanged(p0: Editable?) {}
 
         })
-        episodeViewModel.characterUrlLiveData.observe(this, Observer {
-            episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+        episodeViewModel.characterUrlLiveData.observe(this,  {
+            episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString())
 
         })
-        episodeViewModel.CharacterLiveData.observe(this, Observer {
+        episodeViewModel.characterLiveData.observe(this, {
             if(it.results.isEmpty()){
                 Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
             }

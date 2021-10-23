@@ -1,21 +1,13 @@
 package com.example.rickandmortyepisodeguide
 
 
-import android.app.Activity
-import android.content.Context
+
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
 import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,14 +21,12 @@ import com.example.rickandmortyepisodeguide.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
     lateinit var viewModel:MainViewModel
-    lateinit var binding:ActivityMainBinding
+    private lateinit var binding:ActivityMainBinding
     var isScrolling:Boolean = false
     var totalRows: Int? = null
     var currentRow : Int? = null
     var scrolledRows: Int? = null
-    var rvPosition: Int = 0
 
-//    lateinit var seasonSpinnerValues:Array<Int>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +44,8 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
         binding.recyclerView.layoutManager = layoutManager
         fetchData(1)
 
-        viewModel.allEpisodesLivedata.observe(this, Observer {
-            viewModel.allEpisodes?.addAll(it)
+        viewModel.allEpisodesLivedata.observe(this,  {
+            viewModel.allEpisodes.addAll(it)
             binding.returnSearch.visibility = View.GONE
             binding.recyclerView.adapter = RVEpisodesAdapter(viewModel.allEpisodes,this)
 
@@ -63,7 +53,7 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
 
         })
 
-        viewModel.episodeBySearch.observe(this, Observer {
+        viewModel.episodeBySearch.observe(this,  {
             binding.returnSearch.visibility = View.VISIBLE
             binding.progressBar.visibility = View.GONE
             binding.recyclerView.adapter = RVEpisodesAdapter(it,this)
@@ -110,15 +100,14 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
 
     private fun fetchData(startEpisode: Int) {
         binding.progressBar.visibility = View.VISIBLE
-        viewModel.fetchData(startEpisode!!)
+        viewModel.fetchData(startEpisode)
 
 
     }
 
     private fun fetchSearch(tv:EditText) {
         val searchText = tv.text.toString()
-        Log.d("RESULTA",searchText.toString())
-        if(searchText.length>0){
+        if(searchText.isNotEmpty()){
             viewModel.allEpisodes.clear()
             binding.returnSearch.visibility = View.VISIBLE
             binding.progressBar.visibility = View.VISIBLE
@@ -130,7 +119,7 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
 
 
     override fun onEpisodeCLickListener(id: Int) {
-        var intent = Intent(this,EpisodeActivity::class.java)
+        val intent = Intent(this,EpisodeActivity::class.java)
         intent.putExtra("id",id)
         startActivity(intent)
     }

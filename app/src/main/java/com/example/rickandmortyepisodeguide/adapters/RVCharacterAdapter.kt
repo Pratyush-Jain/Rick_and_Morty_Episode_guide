@@ -8,20 +8,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.rickandmortyepisodeguide.data.pojo.CharacterInfo
 import com.example.rickandmortyepisodeguide.databinding.CharacterRowItemBinding
-import com.example.rickandmortyepisodeguide.databinding.EpisodeListItemBinding
 
 
-class RVCharacterAdapter(val data: List<CharacterInfo>): RecyclerView.Adapter<RVCharacterAdapter.viewHolder>() {
-    class viewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+class RVCharacterAdapter(val data: List<CharacterInfo>): RecyclerView.Adapter<RVCharacterAdapter.ViewHolder>() {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = CharacterRowItemBinding.bind(itemView)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = CharacterRowItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return viewHolder(binding.root)
+        return ViewHolder(binding.root)
     }
 
-    override fun onBindViewHolder(holder: viewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.CharacterName.setText(data[position].name)
         holder.binding.CharacterOrigin.setText(data[position].origin?.name)
         holder.binding.CharacterSpecies.setText(data[position].species)

@@ -6,7 +6,6 @@ import com.example.rickandmortyepisodeguide.data.pojo.CharacterInfo
 import com.example.rickandmortyepisodeguide.data.pojo.CharacterList
 import com.example.rickandmortyepisodeguide.data.pojo.EpisodeInfo
 import com.example.rickandmortyepisodeguide.data.pojo.EpisodeList
-import retrofit2.Call
 
 import retrofit2.Response
 
@@ -17,31 +16,19 @@ class RnMRepository(private val rnmService:RnMService) {
         return rnmService.getSingleEpisode(id)
     }
 
-   suspend fun getAllEpisodes(): Response<EpisodeList> {
-        return rnmService.getAllEpisodes()
-    }
 
    suspend fun getEpisodeBySearch(p0: String):  Response<EpisodeList> {
        return rnmService.getEpisodeBySearch(p0)
     }
 
-//    suspend fun getEpisodeByList(episodeList: List<Int>): Response<List<EpisodeInfo>> {
-//        return rnmService.getEpisodeByList(episodeList)
-//    }
 
     suspend fun fetchEpisodes(range: List<Int>):Response<List<EpisodeInfo>> {
         return rnmService.fetchEpisodes(range)
 
     }
-
-    suspend fun filterCharacterByGender(gender: String,episodeId:Int):Response<CharacterList> {
-        return rnmService.filterCharacterByGender(gender)
-    }
-
-    suspend fun filterCharacterByNameAndGender(gender: String,name:String,episodeId:Int):Response<CharacterList> {
+    suspend fun filterCharacterByNameAndGender(gender: String,name:String):Response<CharacterList> {
         return rnmService.filterCharacterByNameAndGender(gender,name)
     }
-
     suspend fun getCharacter(id:Int):Response<CharacterInfo>{
         return rnmService.getCharacter(id)
     }
