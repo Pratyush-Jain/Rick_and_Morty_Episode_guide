@@ -14,6 +14,6 @@ Features/Components includes:
 <br>
 Api Used: https://rickandmortyapi.com/
 
-Apk added in APK folder in root directory
+Apk can be found [here](/APK)
 
 ![Mockup](Mockup%20(2).png)
