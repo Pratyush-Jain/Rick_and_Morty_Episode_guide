@@ -1,5 +1,6 @@
 package com.example.rickandmortyepisodeguide.data.api
 
+import com.example.rickandmortyepisodeguide.data.pojo.CharacterList
 import com.example.rickandmortyepisodeguide.data.pojo.EpisodeInfo
 import com.example.rickandmortyepisodeguide.data.pojo.EpisodeList
 import retrofit2.Call
@@ -12,8 +13,29 @@ import retrofit2.http.Query
 interface RnMService {
 
     @GET("episode/{id}")
-    fun getSingleEpisode(@Path("id")id:Int):Response<EpisodeInfo>
+   suspend fun getSingleEpisode(@Path("id")id:Int):Response<EpisodeInfo>
 
     @GET("episode")
-    fun getAllEpisodes():Call<EpisodeList>
+    suspend fun getAllEpisodes():Response<EpisodeList>
+
+    @GET("episode")
+    suspend fun getEpisodeBySearch(@Query("name")p0: CharSequence): Response<EpisodeList>
+
+//    @GET("episode/{ids}")
+//    suspend fun getEpisodeByList(@Path("ids")episodeList: List<Int>): Response<List<EpisodeInfo>>
+
+    @GET("episode/{ids}")
+    suspend fun fetchEpisodes(@Path("ids")range: List<Int>): Response<List<EpisodeInfo>>
+
+
+
+    @GET("character")
+    suspend fun filterCharacterByGender(@Query("gender")gender: String):Response<CharacterList>
+
+    @GET("character")
+    suspend fun filterCharacterByNameAndGender(@Query("gender")gender: String,@Query("name")name: String):Response<CharacterList>
+
+
+//    @GET()
+//    fun getEpisodesBySeason(season: Int): List<EpisodeInfo>
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Rick and Morty Episode guide</string>
+    <string name="search_episode">Search episode</string>
 </resources>

@@ -3,7 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/layout/activity_main.xml" value="0.17617753623188406" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/layout/activity_episode.xml" value="0.24094202898550723" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/layout/character_row_item.xml" value="0.8800000000000001" />
+        <entry key="..\:/project/Android/RickandMortyEpisodeguide/app/src/main/res/layout/episode_list_item.xml" value="0.264" />
       </map>
     </option>
   </component>
