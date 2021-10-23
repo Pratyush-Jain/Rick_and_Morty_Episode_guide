@@ -1,16 +1,19 @@
 package com.example.rickandmortyepisodeguide
 
+
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.Network
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AbsListView
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
     var totalRows: Int? = null
     var currentRow : Int? = null
     var scrolledRows: Int? = null
+    var rvPosition: Int = 0
 
 //    lateinit var seasonSpinnerValues:Array<Int>
 
@@ -52,8 +56,18 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
 
         viewModel.allEpisodesLivedata.observe(this, Observer {
             viewModel.allEpisodes?.addAll(it)
+            binding.returnSearch.visibility = View.GONE
             binding.recyclerView.adapter = RVEpisodesAdapter(viewModel.allEpisodes,this)
+
             binding.progressBar.visibility = View.GONE
+
+        })
+
+        viewModel.episodeBySearch.observe(this, Observer {
+            binding.returnSearch.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.GONE
+            binding.recyclerView.adapter = RVEpisodesAdapter(it,this)
+
         })
 
 
@@ -72,69 +86,27 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
                     scrolledRows = layoutManager.findFirstVisibleItemPosition()
 
                     if(isScrolling && (currentRow!! + scrolledRows!! ==totalRows) && totalRows!! <viewModel.totalEpisodes){
-
                         isScrolling = false
-
                         fetchData(totalRows!! +1)
                     }
-
             }
         })
 
 
 
-
-//        binding.recyclerView.apply {
-//            layoutManager =LinearLayoutManager(this@MainActivity)
-//            addOnScrollListener(object: RecyclerView.OnScrollListener() {
-//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                    super.onScrollStateChanged(recyclerView, newState)
-//                    if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-//                        isScrolling = true
-//                    }
-//                }
-//
-//                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                    super.onScrolled(recyclerView, dx, dy)
-//                    currentRow = (layoutManager as LinearLayoutManager).childCount
-//                    totalRows = (layoutManager as LinearLayoutManager).itemCount
-//                    scrolledRows = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-//
-//                    if(isScrolling && (currentRow!! + scrolledRows!! ==totalRows)){
-//
-//                        isScrolling = false
-//
-//                        fetchData(totalRows!!)
-//
-//                    }
-//                }
-//
-//            })
-//
-//        }
-
-        //getAllEpisodes()
-
-        //Toast.makeText(this, seasonSpinnerValues[0].toString(), Toast.LENGTH_SHORT).show()
-            //val spinnerAdapter = ArrayAdapter<Int>(this,android.R.layout.simple_spinner_dropdown_item,seasonSpinnerValues)
-        //binding.spinner.adapter = spinnerAdapter
-
-
-        binding.searchText.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(!p0.isNullOrEmpty()){
-                    viewModel.getEpisodeBySearch(p0)
-                }
-                else{
-
-                }
-            }
-            override fun afterTextChanged(p0: Editable?) {}
-        })
+        binding.searchButton.setOnClickListener {
+            fetchSearch(binding.searchText)
 
 
     }
+        binding.returnSearch.setOnClickListener {
+            viewModel.allEpisodes.clear()
+            binding.searchText.text.clear()
+            fetchData(1)
+        }
+    }
+
+
 
     private fun fetchData(startEpisode: Int) {
         binding.progressBar.visibility = View.VISIBLE
@@ -142,6 +114,20 @@ class MainActivity : AppCompatActivity(),RVEpisodeClickListener {
 
 
     }
+
+    private fun fetchSearch(tv:EditText) {
+        val searchText = tv.text.toString()
+        Log.d("RESULTA",searchText.toString())
+        if(searchText.length>0){
+            viewModel.allEpisodes.clear()
+            binding.returnSearch.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
+            viewModel.getEpisodeBySearch(searchText)
+        }
+
+    }
+
+
 
     override fun onEpisodeCLickListener(id: Int) {
         var intent = Intent(this,EpisodeActivity::class.java)

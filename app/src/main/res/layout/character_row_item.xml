@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
+    app:cardBackgroundColor="@color/card_color"
     app:cardCornerRadius="15dp"
     app:cardPreventCornerOverlap="false">
 
@@ -17,6 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Earth"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/CharacterSpecies"
             app:layout_constraintTop_toTopOf="@+id/textView4" />
@@ -37,6 +39,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Name"
+            android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/CharacterImage"
@@ -48,6 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:text="Alive"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toTopOf="@+id/textView" />
@@ -57,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Human"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/CharacterStatus"
             app:layout_constraintTop_toTopOf="@+id/textView2" />
@@ -67,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Status :"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/CharacterName"
             app:layout_constraintTop_toBottomOf="@+id/CharacterName" />
@@ -76,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Species :"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/textView"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -85,6 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Origin :"
+            android:textColor="@color/secondart_text_color"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />

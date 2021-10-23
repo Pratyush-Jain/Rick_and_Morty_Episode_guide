@@ -21,16 +21,18 @@ class MainViewModel(private val repository:RnMRepository): ViewModel() {
 
     var allEpisodesLivedata = MutableLiveData<List<EpisodeInfo>>()
     var allEpisodes = mutableListOf<EpisodeInfo>()
-    var episodeBySearch = MutableLiveData<Response<EpisodeList>>()
-
-    var lastEpisode = MutableLiveData<String>()
+    var episodeBySearch = MutableLiveData<List<EpisodeInfo>>()
 
 
-    fun getEpisodeBySearch(p0: CharSequence) {
+    fun getEpisodeBySearch(p0: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            episodeBySearch.postValue(repository.getEpisodeBySearch(p0))
-        }
+           val result = repository.getEpisodeBySearch(p0)
+            if(result.isSuccessful){
+                val data = result.body()
+                episodeBySearch.postValue(data!!.results)
+            }
 
+        }
     }
 
     fun fetchData(startEpisode: Int){

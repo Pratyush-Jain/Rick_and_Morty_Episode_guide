@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Rick and Morty Episode guide</string>
     <string name="search_episode">Search episode</string>
+    <string name="rnm_image">rnm image</string>
+    <string name="search">Search</string>
+    <string name="return_from_seach">return from seach</string>
+    <string name="release_date">Release date</string>
+    <string name="characters">Characters</string>
+    <string name="search_characters">Search characters</string>
+    <string name="todo">TODO</string>
 </resources>

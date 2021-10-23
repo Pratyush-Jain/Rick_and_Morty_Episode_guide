@@ -26,6 +26,7 @@ import com.example.rickandmortyepisodeguide.databinding.ActivityMainBinding
 
 class EpisodeActivity : AppCompatActivity() {
     lateinit var binding:ActivityEpisodeBinding
+    var isInitial = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +41,6 @@ class EpisodeActivity : AppCompatActivity() {
         val rnmRepository = RnMRepository(rnmService)
 
         val episodeViewModel = ViewModelProvider(this, EpisodeViewModelFactory(rnmRepository))[EpisodeViewModel::class.java]
-
         episodeViewModel.fetchEpisodeData(episodeId)
         binding.characterRV.layoutManager = LinearLayoutManager(this)
 
@@ -49,36 +49,64 @@ class EpisodeActivity : AppCompatActivity() {
             binding.episodeTitle.setText(it.name)
             binding.releaseDate.setText(it.airDate)
             binding.characterCount.setText(""+it.characters.size)
+            episodeViewModel.charactersOfEpisode.addAll(it.characters)
+            episodeViewModel.characterUrlLiveData.value = it.characters
+
         })
-        episodeViewModel.CharacterLiveData.observe(this, Observer {
-            binding.characterRV.adapter = RVCharacterAdapter(it.results)
-        })
+
+        binding.progressBar2.visibility = View.VISIBLE
         binding.backButton.setOnClickListener {
             super.onBackPressed()
         }
         binding.genderSpinner.adapter = ArrayAdapter(this,android.R.layout.simple_spinner_item,episodeViewModel.genders)
+
         binding.genderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-              episodeViewModel.filterCharacterByGender(p0?.selectedItem.toString())
-                binding.searchText.text.clear()
+                if(isInitial){
+                    isInitial = false
+                }else {
+                    episodeViewModel.filterCharacters(
+                        p0!!.getItemAtPosition(p2).toString(),
+                        "",
+                        episodeId
+                    )
+                    binding.progressBar2.visibility = View.VISIBLE
+                }
+                    binding.searchText.text.clear()
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
         }
+
         binding.searchText.addTextChangedListener(object: TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if(!p0.isNullOrEmpty()){
-                    episodeViewModel.filterCharacterByNameAndGender(binding.genderSpinner.selectedItem.toString(), p0.toString()
-                    )
+                    binding.progressBar2.visibility = View.VISIBLE
+                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+                    //episodeViewModel.filterCharacterByNameAndGender(binding.genderSpinner.selectedItem.toString(), p0.toString(),episodeId)
                 }
                 else{
-                    episodeViewModel.filterCharacterByGender(binding.genderSpinner.selectedItem.toString())
+                    episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+                    //episodeViewModel.filterCharacterByGender(binding.genderSpinner.selectedItem.toString(),episodeId)
                 }
             }
 
             override fun afterTextChanged(p0: Editable?) {}
 
+        })
+        episodeViewModel.characterUrlLiveData.observe(this, Observer {
+            episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString(),episodeId)
+
+        })
+        episodeViewModel.CharacterLiveData.observe(this, Observer {
+            if(it.results.isEmpty()){
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+            }
+            binding.characterRV.adapter = RVCharacterAdapter(it.results)
+            binding.progressBar2.visibility = View.GONE
         })
     }
 
