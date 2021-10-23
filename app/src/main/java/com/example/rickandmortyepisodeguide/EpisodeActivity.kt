@@ -81,11 +81,11 @@ class EpisodeActivity : AppCompatActivity() {
                 if(!p0.isNullOrEmpty()){
                     binding.progressBar2.visibility = View.VISIBLE
                     episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString())
-                    //episodeViewModel.filterCharacterByNameAndGender(binding.genderSpinner.selectedItem.toString(), p0.toString(),episodeId)
+
                 }
                 else{
                     episodeViewModel.filterCharacters(binding.genderSpinner.selectedItem.toString(),binding.searchText.text.toString())
-                    //episodeViewModel.filterCharacterByGender(binding.genderSpinner.selectedItem.toString(),episodeId)
+
                 }
             }
 
